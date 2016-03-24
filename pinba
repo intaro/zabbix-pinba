@@ -1,0 +1,40 @@
+#!/usr/bin/env php
+<?php
+
+$conf = __DIR__ . '/pinba.conf.php';
+if (!file_exists($conf)) {
+    throw new \RuntimeException(sprintf('Not found config file %s', $conf));
+}
+
+$conf = require $conf;
+
+if (count($argv) < 2) {
+    throw new \InvalidArgumentException('You must provide at least one argument');
+}
+
+if ('errors' == $argv[1]) {
+    if (!isset($argv[2])) {
+        throw new \InvalidArgumentException('You must provide `server_name` in the second argument');
+    }
+
+    $c = new \PDO($conf['dsn'], $conf['db_user'], $conf['db_pass']);
+
+    $sql = 'SELECT count(*) FROM request WHERE status >= 500 AND server_name = :server_name';
+
+    $s = $c->prepare($sql);
+    $s->execute([ 'server_name' => $argv[2] ]);
+
+    echo $s->fetchColumn();
+} elseif ('discovery' == $argv[1]) {
+    $result = [
+        "data" => [],
+    ];
+
+    foreach ($conf['server_names'] as $name) {
+        $result['data'][] = [ '{#SV_NAME}' => $name ];
+    }
+
+    echo json_encode($result);
+}
+
+
