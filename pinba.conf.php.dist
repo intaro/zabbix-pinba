@@ -5,8 +5,9 @@ return [
     'db_user' => 'pinba',
     'db_pass' => 'password',
 
-    // list of monitoring hosts
-    'server_names' => [
-        //"www.example.com",
+    // black list of server_names from pinba. these server_names will not be monitored by zabbix triggers (Template Pinba)
+    'black_list_for_zabbix' => [
+        "unknown",
+        "localhost"
     ],
 ];
