@@ -29,7 +29,7 @@ if ('errors' == $argv[1]) {
 
     $c = new \PDO($conf['dsn'], $conf['db_user'], $conf['db_pass']);
 
-    $sql = 'select distinct server_name from (select server_name, TIMESTAMPDIFF(HOUR, created_at ,NOW()) as ago from ipm_report_by_server_name having ago<=24) t order by server_name;';
+    $sql = 'select distinct server_name from (select server_name, TIMESTAMPDIFF(HOUR, created_at ,NOW()) as ago from ipm_report_by_server_name having ago <= 24) t order by server_name;';
 
     $s = $c->prepare($sql);
     $s->execute();
@@ -39,8 +39,9 @@ if ('errors' == $argv[1]) {
     ];
 
     while ($name = $s->fetch()) {
-        if(!in_array($name['server_name'], $conf['black_list_for_zabbix']))
-          $result['data'][] = [ '{#SV_NAME}' => $name['server_name'] ];
+        if(!in_array($name['server_name'], $conf['black_list_for_zabbix'])) {
+            $result['data'][] = [ '{#SV_NAME}' => $name['server_name'] ];
+        }
     }
 
     echo json_encode($result);

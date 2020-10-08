@@ -10,9 +10,4 @@ return [
         "unknown",
         "localhost"
     ],
-
-    // list of monitoring hosts
-    'server_names' => [
-        //"www.example.com",
-    ],
 ];
